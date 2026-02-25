@@ -1,0 +1,35 @@
+# Core Deep Learning
+torch==2.2.2
+transformers==4.38.2
+datasets==2.18.0
+accelerate==0.27.2
+
+# Evaluation Metrics
+rouge_score==0.1.2
+sacrebleu==2.4.1
+
+# Data Handling
+pandas==2.2.1
+numpy==1.26.4
+
+# NLP Utilities
+nltk==3.8.1
+
+# Progress + Visualization
+tqdm==4.66.2
+matplotlib==3.8.3
+
+# API Deployment
+fastapi==0.110.0
+uvicorn==0.27.1
+
+# Config Handling
+PyYAML==6.0.1
+python-box==7.1.1
+ensure==1.0.4
+
+# Notebook (optional but useful)
+notebook==7.1.2
+ipykernel==6.29.3
+
+-e .
