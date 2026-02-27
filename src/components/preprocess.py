@@ -60,8 +60,7 @@ class Preprocess:
                 remove_columns=train_dataset.column_names
             )
             
-            logger.info('Preprocessing completed')
-            
+            logger.info('Preprocessing completed')       
             os.makedirs(TOKENIZER_DIR,exist_ok=True)
             
             self.tokenizer.save_pretrained(TOKENIZER_DIR)

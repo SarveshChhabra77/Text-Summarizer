@@ -39,7 +39,6 @@ class Model_Trainer:
                 logging_steps=50,
                 save_strategy="epoch",
                 fp16=False,
-                predict_with_generate=True,
                 save_total_limit=2
             )
             data_collator = DataCollatorForSeq2Seq(
@@ -64,6 +63,7 @@ class Model_Trainer:
             logger.info('Training complted')
             
         except Exception as e:
+            
             raise SummarizerException(e,sys)
 
 

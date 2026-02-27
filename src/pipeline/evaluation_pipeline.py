@@ -1,21 +1,19 @@
 from src.components.data_loader import DataLoader
-from src.components.preprocess import Preprocess
-from src.components.model_trainer import Model_Trainer
-from src.exceptions.exception import SummarizerException
+from src.components.model_evaluation import ModelEvaluation
 from src.logging.logger import logger
+from src.exceptions.exception import SummarizerException
 import sys
 
 
-
-class TrainingPipeline:
+class EvaluationPipeline:
     
     def __init__(self):
         
         try:
             
             self.loader = DataLoader()
-            self.preprocess = Preprocess()
-        
+            self.evaluator = ModelEvaluation()
+            
         except Exception as e:
             
             raise SummarizerException(e,sys)
@@ -25,16 +23,17 @@ class TrainingPipeline:
         
         try:
             
-            logger.info('Trainining Pipeline Started')
+            logger.info('Evaluation Pipeline Started')
             
             dataset = self.loader.load_data()
             
-            tokenized_data = self.preprocess.transform(dataset=dataset)
+            scores = self.evaluator.evaluate(dataset=dataset)
             
-            model_trainer = Model_Trainer()
-            model_trainer.train(tokenized_data=tokenized_data)
+            logger.info(f'Rouge Score : {scores}')
             
-            logger.info('Training Pipeline Completed Successfully')
+            print(f'Rouge Scores : {scores}')
+            
+            logger.info('Evaluation Pipeline Completed Successfully')
         
         except Exception as e:
             

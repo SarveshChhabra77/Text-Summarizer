@@ -17,9 +17,9 @@ class SummarizerException(Exception):
     
     
     
-from src.logging.logger import logger
-logger.info('Running custom exception')
-try:
-    1/0
-except Exception as e:
-    raise SummarizerException(e,sys)
+# from src.logging.logger import logger
+# logger.info('Running custom exception')
+# try:
+#     1/0
+# except Exception as e:
+#     raise SummarizerException(e,sys)
