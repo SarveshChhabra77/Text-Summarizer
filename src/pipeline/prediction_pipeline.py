@@ -3,9 +3,9 @@ from src.logging.logger import logger
 from src.exceptions.exception import SummarizerException
 import sys
 
-from src.constants import MODEL_DIR,TOKENIZER_DIR
 
-# MODEL_NAME = 'sarvesh77/text-summarizer'
+
+MODEL_NAME = 'sarvesh77/text-summarizer'
 
 class PredictionPipeline:
     
@@ -15,8 +15,8 @@ class PredictionPipeline:
             
             logger.info('Loading trained model for predictions')
             
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_DIR)
-            self.tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_DIR)
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+            self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
             
         except Exception as e:
             
