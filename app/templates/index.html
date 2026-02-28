@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Text Summarizer</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container animate-in">
+    <header>
+        <h1>AI Text Summarizer</h1>
+        <p>Condense your long articles into concise insights instantly.</p>
+    </header>
+
+    <div class="input-section">
+        <textarea id="inputText" placeholder="Paste your long text here..."></textarea>
+        <button id="summarizeBtn" onclick="summarize()">
+            <span id="btnText">Summarize Text</span>
+            <div id="loader" class="hidden"></div>
+        </button>
+    </div>
+
+    <div class="output-section">
+        <h3>Summary</h3>
+        <div id="result" class="placeholder-text">Your summary will appear here...</div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 | Developed by <strong>Sarvesh Chhabra</strong></p>
+    </footer>
+</div>
+
+<script>
+async function summarize() {
+    const text = document.getElementById("inputText").value;
+    const resultDiv = document.getElementById("result");
+    const btnText = document.getElementById("btnText");
+    const loader = document.getElementById("loader");
+
+    if (!text) {
+        alert("Please enter some text first!");
+        return;
+    }
+
+    btnText.style.display = "none";
+    loader.classList.remove("hidden");
+    resultDiv.classList.add("processing");
+    resultDiv.innerText = "Processing your text...";
+
+    try {
+        const response = await fetch("/summarize", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
+        });
+
+        const data = await response.json();
+        resultDiv.classList.remove("placeholder-text", "processing");
+        resultDiv.innerText = data.summary;
+    } catch (error) {
+        resultDiv.innerText = "Error: Could not reach the server.";
+    } finally {
+        btnText.style.display = "inline";
+        loader.classList.add("hidden");
+    }
+}
+</script>
+
+</body>
+</html>

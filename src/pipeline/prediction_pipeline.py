@@ -1,8 +1,11 @@
 from transformers import AutoTokenizer,AutoModelForSeq2SeqLM
-from src.constants import MODEL_DIR,TOKENIZER_DIR
 from src.logging.logger import logger
 from src.exceptions.exception import SummarizerException
 import sys
+
+from src.constants import MODEL_DIR,TOKENIZER_DIR
+
+# MODEL_NAME = 'sarvesh77/text-summarizer'
 
 class PredictionPipeline:
     
