@@ -3,71 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Text Summarizer</title>
+    <title>SummarAI — AI Text Summarizer</title>
+    <meta name="description" content="SummarAI uses a fine-tuned Transformer model to condense long articles into concise, accurate summaries instantly.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="container animate-in">
-    <header>
-        <h1>AI Text Summarizer</h1>
-        <p>Condense your long articles into concise insights instantly.</p>
-    </header>
-
-    <div class="input-section">
-        <textarea id="inputText" placeholder="Paste your long text here..."></textarea>
-        <button id="summarizeBtn" onclick="summarize()">
-            <span id="btnText">Summarize Text</span>
-            <div id="loader" class="hidden"></div>
-        </button>
+    <!-- Animated background orbs -->
+    <div class="bg-orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
 
-    <div class="output-section">
-        <h3>Summary</h3>
-        <div id="result" class="placeholder-text">Your summary will appear here...</div>
-    </div>
+    <!-- Noise overlay -->
+    <div class="noise" aria-hidden="true"></div>
 
-    <footer>
-        <p>&copy; 2026 | Developed by <strong>Sarvesh Chhabra</strong></p>
-    </footer>
-</div>
+    <div class="page-wrapper">
+
+        <!-- Header -->
+        <header class="site-header">
+            <div class="logo-badge">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M9 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M13 3H21V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 3L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M7 12H14M7 16H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>SummarAI</span>
+            </div>
+            <div class="header-tag">
+                <span class="pulse-dot" aria-hidden="true"></span>
+                Transformer-Powered
+            </div>
+        </header>
+
+        <!-- Hero -->
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-eyebrow">Fine-tuned T5 · ROUGE-optimised · HuggingFace</div>
+            <h1 id="hero-title" class="hero-title">
+                Summarize Any Text<br>
+                <span class="gradient-text">In Seconds</span>
+            </h1>
+            <p class="hero-sub">Drop in an article, research paper, or any long-form content. Our transformer model distils it into a crisp, accurate summary.</p>
+        </section>
+
+        <!-- Main card -->
+        <main class="card" id="main-card">
+
+            <!-- Input panel -->
+            <div class="panel input-panel">
+                <div class="panel-header">
+                    <div class="panel-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Input Text
+                    </div>
+                    <div class="meta-chips">
+                        <span class="chip" id="wordCountChip">0 words</span>
+                        <button class="chip chip-btn" id="clearBtn" onclick="clearInput()" title="Clear input" aria-label="Clear input">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="textarea-wrapper">
+                    <textarea
+                        id="inputText"
+                        placeholder="Paste your article, research paper, or long-form content here…"
+                        aria-label="Text to summarize"
+                        spellcheck="true"
+                    ></textarea>
+                    <div class="char-count" id="charCount">0 / ∞</div>
+                </div>
+
+                <button class="summarize-btn" id="summarizeBtn" onclick="summarize()" aria-live="polite">
+                    <span class="btn-content" id="btnContent">
+                        <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Generate Summary
+                    </span>
+                    <span class="btn-loader hidden" id="btnLoader" aria-hidden="true">
+                        <span class="spinner"></span>
+                        Summarizing…
+                    </span>
+                </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="card-divider" aria-hidden="true">
+                <div class="divider-line"></div>
+                <div class="divider-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="divider-line"></div>
+            </div>
+
+            <!-- Output panel -->
+            <div class="panel output-panel">
+                <div class="panel-header">
+                    <div class="panel-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Summary
+                    </div>
+                    <button class="chip chip-btn" id="copyBtn" onclick="copyResult()" title="Copy summary" aria-label="Copy summary to clipboard" disabled>
+                        <svg id="copyIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/></svg>
+                        Copy
+                    </button>
+                </div>
+
+                <div class="result-wrapper" id="resultWrapper">
+                    <div class="result-placeholder" id="resultPlaceholder" aria-live="polite">
+                        <div class="placeholder-icon" aria-hidden="true">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        </div>
+                        <p>Your AI-generated summary will appear here</p>
+                        <span>Enter text above and hit <strong>Generate Summary</strong></span>
+                    </div>
+                    <div class="result-text hidden" id="result" aria-live="polite" aria-label="Summary result"></div>
+                </div>
+
+                <!-- Stats bar (hidden until result) -->
+                <div class="stats-bar hidden" id="statsBar">
+                    <div class="stat">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+                        <span id="inputWordStat">— words input</span>
+                    </div>
+                    <div class="stat-dot" aria-hidden="true"></div>
+                    <div class="stat">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span id="outputWordStat">— words output</span>
+                    </div>
+                    <div class="stat-dot" aria-hidden="true"></div>
+                    <div class="stat">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        <span id="compressionStat">—% compression</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <p>Built by <strong>Sarvesh Chhabra</strong> &middot; Fine-tuned T5 on CNN/DailyMail &middot; &copy; 2026</p>
+        </footer>
+
+    </div><!-- /page-wrapper -->
 
 <script>
+// ── Backend API (unchanged) ──────────────────────────────────────────────────
 async function summarize() {
-    const text = document.getElementById("inputText").value;
-    const resultDiv = document.getElementById("result");
-    const btnText = document.getElementById("btnText");
-    const loader = document.getElementById("loader");
+    const text = document.getElementById('inputText').value.trim();
 
     if (!text) {
-        alert("Please enter some text first!");
+        shakeCard();
+        showToast('Please enter some text first!', 'warn');
         return;
     }
 
-    btnText.style.display = "none";
-    loader.classList.remove("hidden");
-    resultDiv.classList.add("processing");
-    resultDiv.innerText = "Processing your text...";
+    setLoading(true);
 
     try {
-        const response = await fetch("/summarize", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+        const response = await fetch('/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text })
         });
 
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
         const data = await response.json();
-        resultDiv.classList.remove("placeholder-text", "processing");
-        resultDiv.innerText = data.summary;
+        showResult(text, data.summary);
     } catch (error) {
-        resultDiv.innerText = "Error: Could not reach the server.";
+        showToast('Could not reach the server. Please try again.', 'error');
+        console.error(error);
     } finally {
-        btnText.style.display = "inline";
-        loader.classList.add("hidden");
+        setLoading(false);
     }
 }
-</script>
 
+// ── UI helpers ───────────────────────────────────────────────────────────────
+function setLoading(on) {
+    const btn  = document.getElementById('summarizeBtn');
+    const text = document.getElementById('btnContent');
+    const load = document.getElementById('btnLoader');
+
+    if (on) {
+        btn.disabled = true;
+        text.classList.add('hidden');
+        load.classList.remove('hidden');
+        btn.classList.add('loading');
+    } else {
+        btn.disabled = false;
+        text.classList.remove('hidden');
+        load.classList.add('hidden');
+        btn.classList.remove('loading');
+    }
+}
+
+function showResult(inputText, summary) {
+    const placeholder = document.getElementById('resultPlaceholder');
+    const resultDiv   = document.getElementById('result');
+    const statsBar    = document.getElementById('statsBar');
+    const copyBtn     = document.getElementById('copyBtn');
+
+    placeholder.classList.add('hidden');
+    resultDiv.classList.remove('hidden');
+    resultDiv.classList.add('result-reveal');
+    resultDiv.textContent = summary;
+
+    // Stats
+    const inputWords  = countWords(inputText);
+    const outputWords = countWords(summary);
+    const compression = inputWords > 0 ? Math.round((1 - outputWords / inputWords) * 100) : 0;
+
+    document.getElementById('inputWordStat').textContent  = `${inputWords} words input`;
+    document.getElementById('outputWordStat').textContent = `${outputWords} words output`;
+    document.getElementById('compressionStat').textContent = `${compression}% compression`;
+
+    statsBar.classList.remove('hidden');
+    statsBar.classList.add('stats-reveal');
+    copyBtn.disabled = false;
+}
+
+function clearInput() {
+    document.getElementById('inputText').value = '';
+    updateWordCount();
+    // Reset output
+    document.getElementById('resultPlaceholder').classList.remove('hidden');
+    document.getElementById('result').classList.add('hidden');
+    document.getElementById('result').classList.remove('result-reveal');
+    document.getElementById('statsBar').classList.add('hidden');
+    document.getElementById('copyBtn').disabled = true;
+}
+
+async function copyResult() {
+    const text = document.getElementById('result').textContent;
+    if (!text) return;
+
+    try {
+        await navigator.clipboard.writeText(text);
+        showToast('Summary copied to clipboard!', 'success');
+        const icon = document.getElementById('copyIcon');
+        icon.innerHTML = '<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+        setTimeout(() => {
+            icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/>';
+        }, 2000);
+    } catch {
+        showToast('Copy failed — please select text manually.', 'error');
+    }
+}
+
+function updateWordCount() {
+    const text  = document.getElementById('inputText').value;
+    const words = countWords(text);
+    const chars = text.length;
+
+    document.getElementById('wordCountChip').textContent = `${words} word${words !== 1 ? 's' : ''}`;
+    document.getElementById('charCount').textContent = `${chars.toLocaleString()} chars`;
+}
+
+function countWords(str) {
+    return str.trim() === '' ? 0 : str.trim().split(/\s+/).length;
+}
+
+function shakeCard() {
+    const card = document.getElementById('main-card');
+    card.classList.add('shake');
+    card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+}
+
+// ── Toast notifications ──────────────────────────────────────────────────────
+function showToast(message, type = 'info') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('toast-visible'));
+    setTimeout(() => {
+        toast.classList.remove('toast-visible');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }, 3200);
+}
+
+// ── Event listeners ──────────────────────────────────────────────────────────
+document.getElementById('inputText').addEventListener('input', updateWordCount);
+
+document.getElementById('inputText').addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        summarize();
+    }
+});
+
+// Init
+updateWordCount();
+</script>
 </body>
 </html>
