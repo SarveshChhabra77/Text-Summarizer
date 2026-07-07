@@ -588,8 +588,8 @@ kbd {
 
 /* ── Responsive ─────────────────────────────────────────────────── */
 
-/* Tablet — collapse to single column */
-@media (max-width: 760px) {
+/* Tablet — collapse to single column only below 600px */
+@media (max-width: 600px) {
     .card {
         flex-direction: column;
         padding: 24px 18px;
@@ -619,7 +619,7 @@ kbd {
 }
 
 /* Mobile */
-@media (max-width: 480px) {
+@media (max-width: 420px) {
     .page-wrapper { padding: 20px 14px 44px; }
     .hero-title   { font-size: 1.85rem; }
     .hero-sub     { font-size: 0.88rem; }
